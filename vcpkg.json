@@ -1,0 +1,28 @@
+{
+  "name": "ciftl",
+  "dependencies": [
+    "gtest",
+    "openssl",
+    "clipp",
+    "crc32c",
+    "fmt"
+  ],
+  "overrides": [
+    {
+      "name": "clipp",
+      "version": "2019-04-30"
+    },
+	{
+	  "name" : "fmt",
+	  "version" : "11.0.2"
+	},
+    {
+      "name": "openssl",
+      "version": "3.3.1"
+    },
+    {
+      "name": "gtest",
+      "version": "1.14.0"
+    }
+  ]
+}
