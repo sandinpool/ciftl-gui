@@ -34,8 +34,12 @@ namespace ciftl
     {
         ByteVector hash(EVP_MD_size(m_md));
         unsigned int hash_len;
-        EVP_DigestFinal_ex(m_ctx, hash.data(), &hash_len);
+        // 需要将上下文拷贝一份，不能直接进行finalize
+        auto copied_ctx = EVP_MD_CTX_new();
+        EVP_MD_CTX_copy(copied_ctx, m_ctx);
+        EVP_DigestFinal_ex(copied_ctx, hash.data(), &hash_len);
         hash.resize(hash_len);
+        EVP_MD_CTX_free(copied_ctx);
         return hash;
     }
 

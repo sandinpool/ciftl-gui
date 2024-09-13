@@ -59,7 +59,10 @@ namespace ciftl
             size_t once_gen = std::min(len - cnt, buffer.size());
             memcpy(data + cnt, buffer.data(), once_gen);
             cnt += once_gen;
-            Sha256Hasher hasher;
+            if(cnt >= len)
+            {
+                break;
+            }
             hasher.update(buffer);
             buffer = hasher.finalize();
         }
@@ -78,7 +81,10 @@ namespace ciftl
             size_t once_gen = std::min(len - cnt, buffer.size());
             memcpy(data + cnt, buffer.data(), once_gen);
             cnt += once_gen;
-            Sha256Hasher hasher;
+            if(cnt >= len)
+            {
+                break;
+            }
             hasher.update(buffer);
             buffer = hasher.finalize();
         }

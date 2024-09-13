@@ -12,7 +12,7 @@ std::string auto_format(const T &vec)
         sprintf(tmp, "%02X", (int)vec[i]);
         res += tmp;
         res += ' ';
-        if (i % 16 == 0 && i != 0)
+        if (i % 16 == 15)
         {
             res += '\n';
         }

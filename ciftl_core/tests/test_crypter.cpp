@@ -12,7 +12,7 @@ TEST(TestCrypter, TestStreamCrypter)
     GTEST_LOG_(INFO) << fmt::format("Test IV1: {}", auto_format(test_iv1));
     auto test_iv2 = StreamGenerator<128, 128>::rand_iv();
     GTEST_LOG_(INFO) << fmt::format("Test IV2: {}", auto_format(test_iv2));
-    auto test_key = StreamGenerator<128, 128>::generate_key_from_password("abcdefg");
+    auto test_key = StreamGenerator<128, 192>::generate_key_from_password("123456");
     GTEST_LOG_(INFO) << fmt::format("Test Key: {}", auto_format(test_key));
     // ChaCha20
     {
