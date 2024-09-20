@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QAbstractTableModel>
 
+#include <ciftl_core/crypter/crypter.h>
+
 #include "etc/line_importer.h"
 #include "etc/type.h"
 
@@ -144,8 +146,7 @@ public:
 
 private:
     void refresh_table();
-
-    void resize_table();
+    void restrict_table();
 
 private slots:
     void update_table(std::vector<CrypterTableData> data);
@@ -162,6 +163,11 @@ private:
 private:
     MainWindow *m_parent_widget;
     LineImporter *m_line_importer;
+
+public:
+    const static std::vector<std::pair<std::string, ciftl::CipherAlgorithm>> __supported_cipher_algorithm__;
+    const static std::unordered_map<std::string, ciftl::CipherAlgorithm> __str_to_cipher_algorithm__;
+
 };
 
 #endif // CRYPTER_FORM_H

@@ -15,6 +15,16 @@
 
 using namespace ciftl;
 
+const std::vector<std::pair<std::string, ciftl::CipherAlgorithm>> CrypterForm::__supported_cipher_algorithm__= {
+    {"ChaCha20", ciftl::CipherAlgorithm::ChaCha20},
+    {"AES - 128位", ciftl::CipherAlgorithm::AES128},
+    {"AES - 192位", ciftl::CipherAlgorithm::AES192},
+    {"AES - 256位", ciftl::CipherAlgorithm::AES256},
+    {"SM4", ciftl::CipherAlgorithm::SM4}
+};
+const std::unordered_map<std::string, ciftl::CipherAlgorithm> CrypterForm::__str_to_cipher_algorithm__(__supported_cipher_algorithm__.begin(), __supported_cipher_algorithm__.end());
+
+
 CrypterForm::CrypterForm(QWidget *parent) : QWidget(parent),
                                             ui(new Ui::CrypterForm),
                                             m_parent_widget(dynamic_cast<MainWindow *>(parent)),
@@ -35,19 +45,20 @@ CrypterForm::CrypterForm(QWidget *parent) : QWidget(parent),
             this, SLOT(update_table(std::vector<CrypterTableData>)));
     connect(ui->pushButtonCopy, &QPushButton::clicked,
             this, &CrypterForm::copy_result);
-
-    ui->comboBoxCipherType->addItem("ChaCha20");
-    ui->comboBoxCipherType->addItem("AES");
-    ui->comboBoxCipherType->addItem("SM4");
-    // 表格
+    // 加载下拉框
+    for(const auto& iter : __supported_cipher_algorithm__)
+    {
+        ui->comboBoxCipherType->addItem(QString::fromStdString(iter.first));
+    }
+    // 初始化表格
     CrypterTableDataModel *model = new CrypterTableDataModel({}, this);
     ui->tableView->setModel(model);
     QHeaderView *header = ui->tableView->horizontalHeader();
-    header->setSectionResizeMode(QHeaderView::Interactive);
     header->setStretchLastSection(true);
 }
 
 CrypterForm::~CrypterForm()
+
 {
     delete ui;
 }
@@ -55,7 +66,7 @@ CrypterForm::~CrypterForm()
 void CrypterForm::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
-    resize_table();
+    restrict_table();
 }
 
 void CrypterForm::refresh_table()
@@ -80,10 +91,11 @@ void CrypterForm::refresh_table()
     }
 }
 
-void CrypterForm::resize_table()
+void CrypterForm::restrict_table()
 {
     QHeaderView *header = ui->tableView->horizontalHeader();
-    header->setMaximumSectionSize(ui->tableView->width() * 0.6);
+    header->setMinimumSectionSize(ui->tableView->width() * 0.25);
+    header->setMaximumSectionSize(ui->tableView->width() * 0.75);
 }
 
 void CrypterForm::update_table(std::vector<CrypterTableData> data)
@@ -143,14 +155,8 @@ void CrypterForm::copy_result()
 
 inline std::shared_ptr<StringCrypterInterface> string_crypter_selection(const std::string &algo_name)
 {
-    const static std::unordered_map<std::string, ciftl::CipherAlgorithm> str2algo = {
-        {"ChaCha20", CipherAlgorithm::ChaCha20},
-        {"AES", CipherAlgorithm::AES},
-        {"SM4", CipherAlgorithm::SM4}
-    };
-
-    auto iter = str2algo.find(algo_name);
-    if (iter == str2algo.end())
+    auto iter = CrypterForm::__str_to_cipher_algorithm__.find(algo_name);
+    if (iter == CrypterForm::__str_to_cipher_algorithm__.end())
     {
         return nullptr;
     }
@@ -158,8 +164,12 @@ inline std::shared_ptr<StringCrypterInterface> string_crypter_selection(const st
     {
     case CipherAlgorithm::ChaCha20:
         return default_chacha20_string_crypter();
-    case CipherAlgorithm::AES:
-        return default_aes_string_crypter();
+    case CipherAlgorithm::AES128:
+        return std::make_shared<AES128StringCrypter>();
+    case CipherAlgorithm::AES192:
+        return std::make_shared<AES192StringCrypter>();
+    case CipherAlgorithm::AES256:
+        return std::make_shared<AES256StringCrypter>();
     case CipherAlgorithm::SM4:
         return default_sm4_string_crypter();
     default:
