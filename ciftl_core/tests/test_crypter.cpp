@@ -16,20 +16,20 @@ TEST(TestCrypter, TestStreamCrypter)
     GTEST_LOG_(INFO) << fmt::format("Test Key: {}", auto_format(test_key));
     // ChaCha20
     {
-        typedef ChaCha20StreamGenerator::IVByteArray IVByteArray;
-        typedef ChaCha20StreamGenerator::KeyByteArray KeyByteArray;
+        typedef ChaCha20OpenSSLStreamGenerator::IVByteArray IVByteArray;
+        typedef ChaCha20OpenSSLStreamGenerator::KeyByteArray KeyByteArray;
 
-        auto iv1 = ChaCha20StreamGenerator::rand_iv();
+        auto iv1 = ChaCha20OpenSSLStreamGenerator::rand_iv();
         GTEST_LOG_(INFO) << fmt::format("IV1: {}", auto_format(iv1));
         IVByteArray iv2 = {0x89, 0x45, 0x9A, 0x13,
                            0xB4, 0x57, 0x10, 0x4F,
                            0x23, 0x43, 0xD4, 0x59};
-        KeyByteArray key = ChaCha20StreamGenerator::generate_key_from_password("123456");
-        auto ccsg1 = std::make_shared<ChaCha20StreamGenerator>(iv2, key, StreamGeneratorMode::Large);
+        KeyByteArray key = ChaCha20OpenSSLStreamGenerator::generate_key_from_password("123456");
+        auto ccsg1 = std::make_shared<ChaCha20OpenSSLStreamGenerator>(iv2, key, StreamGeneratorMode::Large);
         StreamCrypter sc1(ccsg1);
         ByteVector plain = {0x41, 0x42, 0x43, 0x44, 0x31, 0x32, 0x33, 0x34};
         sc1.crypt(plain);
-        auto ccsg2 = std::make_shared<ChaCha20StreamGenerator>(iv2, key, StreamGeneratorMode::Short);
+        auto ccsg2 = std::make_shared<ChaCha20OpenSSLStreamGenerator>(iv2, key, StreamGeneratorMode::Short);
         StreamCrypter sc2(ccsg2);
         sc2.crypt(plain);
         ASSERT_TRUE(is_equal(plain, {0x41, 0x42, 0x43, 0x44, 0x31, 0x32, 0x33, 0x34}));
@@ -40,7 +40,7 @@ TEST(TestCrypter, TestStringCrypter)
 {
     // ChaCha20
     {
-        StringCrypter<ChaCha20StreamGenerator> string_crypter;
+        StringCrypter<ChaCha20OpenSSLStreamGenerator> string_crypter;
         std::string plain_text = "abcdefg1234567";
         auto res1 = string_crypter.encrypt(plain_text, "123456");
         EXPECT_TRUE(res1.is_ok());

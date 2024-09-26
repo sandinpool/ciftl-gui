@@ -16,11 +16,11 @@
 using namespace ciftl;
 
 const std::vector<std::pair<std::string, ciftl::CipherAlgorithm>> CrypterForm::__supported_cipher_algorithm__= {
-    {"ChaCha20", ciftl::CipherAlgorithm::ChaCha20},
-    {"AES - 128位", ciftl::CipherAlgorithm::AES128},
-    {"AES - 192位", ciftl::CipherAlgorithm::AES192},
-    {"AES - 256位", ciftl::CipherAlgorithm::AES256},
-    {"SM4", ciftl::CipherAlgorithm::SM4}
+    {"ChaCha20-OpenSSL", ciftl::CipherAlgorithm::ChaCha20},
+    {"AES-OpenSSL-128位", ciftl::CipherAlgorithm::AES128},
+    {"AES-OpenSSL-192位", ciftl::CipherAlgorithm::AES192},
+    {"AES-OpenSSL-256位", ciftl::CipherAlgorithm::AES256},
+    {"SM4-OpenSSL", ciftl::CipherAlgorithm::SM4}
 };
 const std::unordered_map<std::string, ciftl::CipherAlgorithm> CrypterForm::__str_to_cipher_algorithm__(__supported_cipher_algorithm__.begin(), __supported_cipher_algorithm__.end());
 
@@ -163,15 +163,15 @@ inline std::shared_ptr<StringCrypterInterface> string_crypter_selection(const st
     switch (iter->second)
     {
     case CipherAlgorithm::ChaCha20:
-        return default_chacha20_string_crypter();
+        return std::make_shared<ChaCha20OpenSSLStringCrypter>();
     case CipherAlgorithm::AES128:
-        return std::make_shared<AES128StringCrypter>();
+        return std::make_shared<AES128OpenSSLStringCrypter>();
     case CipherAlgorithm::AES192:
-        return std::make_shared<AES192StringCrypter>();
+        return std::make_shared<AES192OpenSSLStringCrypter>();
     case CipherAlgorithm::AES256:
-        return std::make_shared<AES256StringCrypter>();
+        return std::make_shared<AES256OpenSSLStringCrypter>();
     case CipherAlgorithm::SM4:
-        return default_sm4_string_crypter();
+        return std::make_shared<SM4OpenSSLStringCrypter>();
     default:
         return nullptr;
     }

@@ -10,19 +10,18 @@ namespace ciftl
     constexpr static size_t CHACHA20_KEY_LENGTH = 32;
     constexpr static size_t CHACHA20_IV_LENGTH = 12;
 
-    typedef StreamGeneratorForOpenSSL<CHACHA20_IV_LENGTH, CHACHA20_KEY_LENGTH> OriginalChaCha20StreamGenerator;
-    class ChaCha20StreamGenerator final : public OriginalChaCha20StreamGenerator
+    typedef StreamGeneratorForOpenSSL<CHACHA20_IV_LENGTH, CHACHA20_KEY_LENGTH> OriginalChaCha20OpenSSLStreamGenerator;
+    class ChaCha20OpenSSLStreamGenerator final : public OriginalChaCha20OpenSSLStreamGenerator
     {
     public:
-        typedef typename OriginalChaCha20StreamGenerator::IVByteArray IVByteArray;
-        typedef typename OriginalChaCha20StreamGenerator::KeyByteArray KeyByteArray;
+        typedef typename OriginalChaCha20OpenSSLStreamGenerator::IVByteArray IVByteArray;
+        typedef typename OriginalChaCha20OpenSSLStreamGenerator::KeyByteArray KeyByteArray;
 
-        ChaCha20StreamGenerator(const IVByteArray &iv, const KeyByteArray &key, StreamGeneratorMode mode = StreamGeneratorMode::Medium);
+        ChaCha20OpenSSLStreamGenerator(const IVByteArray &iv, const KeyByteArray &key, StreamGeneratorMode mode = StreamGeneratorMode::Medium);
 
-        ~ChaCha20StreamGenerator() = default;
+        ~ChaCha20OpenSSLStreamGenerator() = default;
 
     };
 
-    typedef StringCrypter<ChaCha20StreamGenerator> ChaCha20StringCrypter;
-    std::shared_ptr<ChaCha20StringCrypter> default_chacha20_string_crypter();
+    typedef StringCrypter<ChaCha20OpenSSLStreamGenerator> ChaCha20OpenSSLStringCrypter;
 }
