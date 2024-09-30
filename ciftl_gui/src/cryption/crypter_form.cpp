@@ -16,6 +16,7 @@
 using namespace ciftl;
 
 const std::vector<std::pair<std::string, ciftl::CipherAlgorithm>> CrypterForm::__supported_cipher_algorithm__= {
+    {"ChaCha20-Standard", ciftl::CipherAlgorithm::ChaCha20Standard},
     {"ChaCha20-OpenSSL", ciftl::CipherAlgorithm::ChaCha20},
     {"AES-OpenSSL-128位", ciftl::CipherAlgorithm::AES128},
     {"AES-OpenSSL-192位", ciftl::CipherAlgorithm::AES192},
@@ -162,6 +163,8 @@ inline std::shared_ptr<StringCrypterInterface> string_crypter_selection(const st
     }
     switch (iter->second)
     {
+    case CipherAlgorithm::ChaCha20Standard:
+        return std::make_shared<ChaCha20StdStringCrypter>();
     case CipherAlgorithm::ChaCha20:
         return std::make_shared<ChaCha20OpenSSLStringCrypter>();
     case CipherAlgorithm::AES128:

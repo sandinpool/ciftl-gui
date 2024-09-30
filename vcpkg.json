@@ -5,6 +5,7 @@
     "openssl",
     "clipp",
     "crc32c",
+	"botan",
     "fmt"
   ],
   "overrides": [
@@ -23,6 +24,10 @@
     {
       "name": "gtest",
       "version": "1.14.0"
-    }
+    },
+	{
+	  "name": "botan",
+	  "version": "3.5.0"
+	}
   ]
 }

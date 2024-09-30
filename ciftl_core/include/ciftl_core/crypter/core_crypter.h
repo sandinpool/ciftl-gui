@@ -16,6 +16,7 @@ namespace ciftl
 {
     enum class CipherAlgorithm
     {
+        ChaCha20Standard,
         ChaCha20,
         AES128,
         AES192,

@@ -8,10 +8,8 @@
 
 namespace ciftl
 {
-    typedef typename ChaCha20OpenSSLStreamGenerator::KeyByteArray KeyByteArray;
-    typedef typename ChaCha20OpenSSLStreamGenerator::IVByteArray IVByteArray;
-
-    ChaCha20OpenSSLStreamGenerator::ChaCha20OpenSSLStreamGenerator(const IVByteArray &iv, const KeyByteArray &key, StreamGeneratorMode mode)
+    ChaCha20OpenSSLStreamGenerator::ChaCha20OpenSSLStreamGenerator(const ChaCha20OpenSSLStreamGenerator::IVByteArray &iv,
+                                                                   const ChaCha20OpenSSLStreamGenerator::KeyByteArray &key, StreamGeneratorMode mode)
         : OriginalChaCha20OpenSSLStreamGenerator(iv, key, mode)
     {
         if (!EVP_EncryptInit_ex(m_ctx, EVP_chacha20(), NULL, m_key.data(), m_iv.data()))
@@ -19,4 +17,6 @@ namespace ciftl
             throw std::bad_alloc();
         }
     }
+
+
 } // namespace ciftl

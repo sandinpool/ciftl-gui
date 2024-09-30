@@ -33,6 +33,8 @@ include_directories(CIFTL_CORE_HOME_INCLUDE_PATH)
 
 find_package(OpenSSL REQUIRED)
 find_package(Crc32c CONFIG REQUIRED)
+find_package(Botan REQUIRED)
+
 
 # 添加源文件
 add_library(${PROJECT_NAME}
@@ -46,7 +48,7 @@ add_library(${PROJECT_NAME}
         ${CIFTL_CRYPTER_SOURCE}
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto Crc32c::crc32c)
+target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto Crc32c::crc32c Botan::Botan)
 
 # 添加单元测试
 enable_testing()
