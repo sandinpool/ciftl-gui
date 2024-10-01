@@ -17,8 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
         "包括了\"密码工具\"、\"哈希工具\"等实用工具\n"
         "密码工具：用于对字符串进行加密，目前支持ChaCha20，AES和SM4三种加密算法\n"
         "哈希工具：用于对文件进行哈希计算，支持MD5, Sha1, Sha256, Sha512四种哈希算法\n"
-        "作者：三点一洲\n"
-        "Copyright (c) 三点一洲（三点一洲工作室） All copyright reserved";
+        "作者：三点一洲（sandinpool）\n"
+        "Copyright (c) 三点一洲（sandinpool） All copyright reserved";
     ui->stackedWidget->addWidget(m_crypter_form);
     ui->stackedWidget->addWidget(m_hash_form);
 

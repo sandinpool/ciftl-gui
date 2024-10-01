@@ -129,7 +129,7 @@ void HashForm::do_hash(QStringList file_paths)
         emit operation_start();
         emit total_progress_update(0L);
         // 遍历文件执行
-        for (size_t i = 0; i < file_paths.size(); i++)
+        for (size_t i = 0; i < (size_t)file_paths.size(); i++)
         {
             auto q_file_path = file_paths[i];
             auto file_path = to_local_path(q_file_path);

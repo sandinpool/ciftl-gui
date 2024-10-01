@@ -1,8 +1,8 @@
 # 设置 CMake 最低版本要求
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 
 # 设置项目名称
-project(ciftl_core VERSION 1.0.0.1 LANGUAGES CXX)
+project(ciftl_core VERSION 1.0.0.2 LANGUAGES CXX)
 
 # 设置相关头文件路径
 set(CIFTL_CORE_HOME_INCLUDE_PATH "${PROJECT_SOURCE_DIR}/include/")
