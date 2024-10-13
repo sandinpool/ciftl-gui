@@ -16,20 +16,20 @@ namespace ciftl
     {
         if (!m_stream_generator)
         {
-            return make_error<size_t>(StreamCrypterErrorCode::INVALID_CIPHER_STREAM_GENERATOR, "创建密码流生成器失败");
+            return Result<size_t>::make_err(StreamCrypterErrorCode::INVALID_CIPHER_STREAM_GENERATOR, "创建密码流生成器失败");
         }
         m_original_crc32 = crc32c::Extend(m_original_crc32, data, len);
         auto buffer = std::make_unique<byte[]>(len);
         if (auto res = m_stream_generator->generate(buffer.get(), len); res.is_err())
         {
-            return make_error<size_t>(std::move(res.get_err_val().value()));
+            return Result<size_t>::make_err(std::move(res.error().value()));
         }
         for (size_t i = 0; i < len; i++)
         {
             data[i] ^= buffer[i];
         }
         m_crypted_crc32 = crc32c::Extend(m_crypted_crc32, data, len);
-        return make_ok<size_t>(len);
+        return Result<size_t>::make_ok(len);
     }
 
     Result<size_t> StreamCrypter::crypt(ByteVector &data)

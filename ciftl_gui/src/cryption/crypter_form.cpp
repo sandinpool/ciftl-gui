@@ -206,14 +206,14 @@ void CrypterForm::encrypt()
         auto res = string_crypter->encrypt(plain_text, password);
         if (res.is_ok())
         {
-            item.res_text = res.get_ok_val().value();
+            item.res_text = res.ok().value();
             item.res_mes = "成功";
         }
         else
         {
             item.res_text.clear();
             item.res_mes =
-                fmt::format("{}: {}", res.get_err_val().value().get_error_code(), res.get_err_val().value().get_error_message());
+                fmt::format("{}: {}", res.error().value().error_code(), res.error().value().error_message());
         }
     }
     refresh_table();
@@ -245,14 +245,14 @@ void CrypterForm::decrypt()
         auto res = string_crypter->decrypt(cipher_text, password);
         if (res.is_ok())
         {
-            item.res_text = res.get_ok_val().value();
+            item.res_text = res.ok().value();
             item.res_mes = "成功";
         }
         else
         {
             item.res_text.clear();
             item.res_mes =
-                fmt::format("{}: {}", res.get_err_val().value().get_error_code(), res.get_err_val().value().get_error_message());
+                fmt::format("{}: {}", res.error().value().error_code(), res.error().value().error_message());
         }
     }
     refresh_table();

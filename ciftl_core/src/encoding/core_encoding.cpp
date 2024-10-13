@@ -1,7 +1,8 @@
 #include <memory>
-#include <ciftl_core/encoding/core_encoding.h>
+#include <unordered_map>
 
-#include "ciftl_core/encoding/hex.h"
+#include <ciftl_core/encoding/core_encoding.h>
+#include <ciftl_core/encoding/hex.h>
 
 namespace ciftl
 {

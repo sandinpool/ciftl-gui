@@ -98,10 +98,11 @@ namespace ciftl
     {
     public:
         // 生成密码流
-        virtual Result<size_t> generate(byte *data, size_t len) = 0;
-        virtual Result<size_t> generate(ByteVector &data) = 0;
+        virtual Result<void> generate(byte *data, size_t len) = 0;
+        virtual Result<void> generate(ByteVector &data) = 0;
+        // virtual Result<ByteVector> generate(size_t len) = 0;
         // 刷新缓冲区内容
-        virtual Result<size_t> flush() = 0;
+        virtual Result<void> flush() = 0;
     };
 
     // 加密密码流生成器
@@ -194,7 +195,7 @@ namespace ciftl
 
     public:
         // 生成加密流
-        Result<size_t> generate(byte *data, size_t len) override
+        Result<void> generate(byte *data, size_t len) override
         {
             // 初始化刷新
             if (!m_is_flush_init)
@@ -223,19 +224,19 @@ namespace ciftl
             memcpy(data + index, m_current_buffer.get() + m_current_index, last_gen);
             index += last_gen;
             m_current_index += last_gen;
-            return make_ok<size_t>(len);
+            return Result<void>::make_ok(len);
         }
 
         // 生成密码流
-        Result<size_t> generate(ByteVector &data) override
+        Result<void> generate(ByteVector &data) override
         {
             return generate(data.data(), data.size());
         }
 
         // 刷新缓冲区内容
-        Result<size_t> flush() override
+        Result<void> flush() override
         {
-            return make_ok<size_t>(m_max_buffer_size);
+            return Result<void>::make_ok(m_max_buffer_size);
         }
 
     protected:
@@ -288,11 +289,11 @@ namespace ciftl
 
     public:
        // 刷新缓冲区内容
-        Result<size_t> flush() override
+        Result<void> flush() override
         {
             if (this->m_current_index != this->m_max_buffer_size && this->m_is_flush_init)
             {
-                return make_error<size_t>(StreamGeneratorErrorCode::FAILED_WHEN_FLUSHING_BUFFER, "刷新缓冲区时失败");
+                return Result<void>::make_err(StreamGeneratorErrorCode::FAILED_WHEN_FLUSHING_BUFFER, "刷新缓冲区时失败");
             }
             this->m_current_index = 0;
             auto temp_buffer = std::make_unique<byte[]>(this->m_max_buffer_size);
@@ -300,15 +301,15 @@ namespace ciftl
             int out_len;
             if (!EVP_EncryptUpdate(m_ctx, temp_buffer.get(), &out_len, this->m_plaintext_buffer.get(), (int)this->m_max_buffer_size))
             {
-                return make_error<size_t>(StreamGeneratorErrorCode::FAILED_WHEN_CRYPTING, "执行密码操作时失败");
+                return Result<void>::make_err(StreamGeneratorErrorCode::FAILED_WHEN_CRYPTING, "执行密码操作时失败");
             }
             // 传入长度应该和输出长度一致
             if (out_len != this->m_max_buffer_size)
             {
-                return make_error<size_t>(StreamGeneratorErrorCode::FAILED_WHEN_CRYPTING, "执行密码操作时失败");
+                return Result<void>::make_err(StreamGeneratorErrorCode::FAILED_WHEN_CRYPTING, "执行密码操作时失败");
             }
             memcpy(this->m_current_buffer.get(), temp_buffer.get(), this->m_max_buffer_size);
-            return make_ok<size_t>(this->m_max_buffer_size);
+            return Result<void>::make_ok(this->m_max_buffer_size);
         }
 
     protected:
@@ -396,18 +397,18 @@ namespace ciftl
             ByteVector raw_data = auto_cast<ByteVector>(text);
             if (auto res = sc.crypt(raw_data.data(), raw_data.size()); res.is_err())
             {
-                return make_error<std::string>(std::move(res.get_err_val().value()));
+                return Result<std::string>::make_err(std::move(res.error().value()));
             }
             // 用剩余的密码流加密crc32校验码
             Crc32ByteArray original_crc32 = auto_cast<Crc32ByteArray>(sc.original_crc32());
             if (auto res = sc.crypt(original_crc32.data(), original_crc32.size()); res.is_err())
             {
-                return make_error<std::string>(std::move(res.get_err_val().value()));
+                return Result<std::string>::make_err(std::move(res.error().value()));
             }
             ByteVector combined_res = combine(iv, original_crc32, raw_data);
             // 编码
             std::string res = m_encoding->encode(combined_res);
-            return make_ok<std::string>(res);
+            return Result<std::string>::make_ok(res);
         }
 
         Result<std::string> decrypt(const std::string &text,
@@ -417,15 +418,15 @@ namespace ciftl
             // 解码
             if (auto res = m_encoding->decode(text); res.is_err())
             {
-                return make_error<std::string>(std::move(res.get_err_val().value()));
+                return Result<std::string>::make_err(std::move(res.error().value()));
             }
             else
             {
-                raw_data = res.get_ok_val().value();
+                raw_data = res.ok().value();
             }
             if (raw_data.size() < IV_LENGTH + sizeof(Crc32Value))
             {
-                return make_error<std::string>(StringCrypterErrorCode::CIPHERTEXT_IS_TOO_SHORT, "密文长度太短");
+                return Result<std::string>::make_err(StringCrypterErrorCode::CIPHERTEXT_IS_TOO_SHORT, "密文长度太短");
             }
             // 使用divide函数将源数据流分配到目标数组中
             IVByteArray iv;
@@ -438,22 +439,22 @@ namespace ciftl
             // 根据加密逻辑，先解密数据部分，后解密crc32校验部分
             if (auto res = sc.crypt(data_body.data(), data_body.size()); res.is_err())
             {
-                return make_error<std::string>(std::move(res.get_err_val().value()));
+                return Result<std::string>::make_err(std::move(res.error().value()));
             }
             // 注意，解密crc32时会改变sc中的crc32值，所以要提前把值取出来
             Crc32Value crypted_crc32 = sc.crypted_crc32();
             // 解密原来的crc32值
             if (auto res = sc.crypt(crc32_array.data(), crc32_array.size()); res.is_err())
             {
-                return make_error<std::string>(std::move(res.get_err_val().value()));
+                return Result<std::string>::make_err(std::move(res.error().value()));
             }
             // 比较解密后得到的结果的校验码和原校验码
             if (!compare(auto_cast<Crc32ByteArray>(crypted_crc32), crc32_array))
             {
-                return make_error<std::string>(StringCrypterErrorCode::WRONG_PASSWORD, "密码错误");
+                return Result<std::string>::make_err(StringCrypterErrorCode::WRONG_PASSWORD, "密码错误");
             }
             std::string res = auto_cast<std::string>(data_body);
-            return make_ok<std::string>(res);
+            return Result<std::string>::make_ok(res);
         }
     };
 }

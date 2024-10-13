@@ -700,7 +700,7 @@ border-color:#E4E4E4;
    </property>
    <widget class="QMenu" name="menuCryption">
     <property name="title">
-     <string>密码相关</string>
+     <string>基础工具</string>
     </property>
     <addaction name="actionCrypter"/>
     <addaction name="actionHash"/>

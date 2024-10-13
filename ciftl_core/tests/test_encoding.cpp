@@ -21,13 +21,13 @@ TEST(TestEncoding, TestHexEncoding)
     // decode
     auto bv_en_l_de = he.decode(bv_en_l);
     auto bv_en_u_de = he.decode(bv_en_u);
-    EXPECT_TRUE(is_equal(bv, bv_en_l_de.get_ok_val().value()));
-    EXPECT_TRUE(is_equal(bv, bv_en_u_de.get_ok_val().value()));
+    EXPECT_TRUE(is_equal(bv, bv_en_l_de.ok().value()));
+    EXPECT_TRUE(is_equal(bv, bv_en_u_de.ok().value()));
     // 有错的decode
     auto bv_err_de_1 = he.decode("2A3D#a");
-    EXPECT_EQ((ErrorCode)bv_err_de_1.get_err_val().value().get_error_code(), (ErrorCode)HexEncodingErrorCode::BAD_CHARACTER);
+    EXPECT_EQ((ErrorCode)bv_err_de_1.error().value().error_code(), (ErrorCode)HexEncodingErrorCode::BAD_CHARACTER);
     auto bv_err_de_2 = he.decode("A123C");
-    EXPECT_EQ((ErrorCode)bv_err_de_2.get_err_val().value().get_error_code(), (ErrorCode)HexEncodingErrorCode::BAD_LENGTH);
+    EXPECT_EQ((ErrorCode)bv_err_de_2.error().value().error_code(), (ErrorCode)HexEncodingErrorCode::BAD_LENGTH);
 }
 
 TEST(TestEncoding, TestBase64Encoding)
@@ -231,8 +231,8 @@ TEST(TestEncoding, TestBase64Encoding)
     auto bv_en = be.encode(bv);
     EXPECT_EQ(bv_en, b64);
     auto bv_de = be.decode(b64);
-    EXPECT_TRUE(is_equal(bv_de.get_ok_val().value(), bv));
+    EXPECT_TRUE(is_equal(bv_de.ok().value(), bv));
     std::string err_str = "QcZ";
     auto err_res = be.decode(err_str);
-    EXPECT_EQ((ErrorCode)err_res.get_err_val().value().get_error_code(), (ErrorCode)Base64EncodingErrorCode::BAD_DECODING_SOURCE);
+    EXPECT_EQ((ErrorCode)err_res.error().value().error_code(), (ErrorCode)Base64EncodingErrorCode::BAD_DECODING_SOURCE);
 }

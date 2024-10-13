@@ -57,6 +57,7 @@ namespace ciftl
     {
         if (len % 4 != 0)
         {
+            auto e = Error(Base64EncodingErrorCode::BAD_DECODING_SOURCE, "非法的Base64字符串");
             return std::make_optional(Error(Base64EncodingErrorCode::BAD_DECODING_SOURCE, "非法的Base64字符串"));
         }
 
@@ -94,7 +95,7 @@ namespace ciftl
         {
             if (auto res = validate(str, len); res)
             {
-                return make_error<ByteVector>(std::move(res.value()));
+                return Result<ByteVector>::make_err(std::move(res.value()));
             }
         }
         BIO *b64 = BIO_new(BIO_f_base64());
@@ -115,6 +116,6 @@ namespace ciftl
         BIO_free_all(bio);
         ByteVector res(decoded_str.size());
         memcpy(res.data(), decoded_str.data(), decoded_str.size());
-        return make_ok<ByteVector>(std::move(res));
+        return Result<ByteVector>::make_ok<ByteVector>(std::move(res));
     }
 }

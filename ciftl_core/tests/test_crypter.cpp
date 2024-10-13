@@ -44,10 +44,10 @@ TEST(TestCrypter, TestStringCrypter)
         std::string plain_text = "abcdefg1234567";
         auto res1 = string_crypter.encrypt(plain_text, "123456");
         EXPECT_TRUE(res1.is_ok());
-        std::string en_text = res1.get_ok_val().value();
+        std::string en_text = res1.ok().value();
         auto res2 = string_crypter.decrypt(en_text, "123456");
         EXPECT_TRUE(res2.is_ok());
-        EXPECT_EQ(plain_text, res2.get_ok_val().value());
+        EXPECT_EQ(plain_text, res2.ok().value());
         auto res3 = string_crypter.decrypt(en_text, "1234567");
         EXPECT_TRUE(res3.is_err());
     }

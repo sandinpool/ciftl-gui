@@ -68,7 +68,7 @@ namespace ciftl
         {
             if (auto res = validate(str, len); res)
             {
-                return make_error<ByteVector>(std::move(res.value()));
+                return Result<ByteVector>::make_err(std::move(res.value()));
             }
         }
         ByteVector res(len / 2);
@@ -95,6 +95,6 @@ namespace ciftl
             }
             res[i / 2] = (byte)b;
         }
-        return make_ok<ByteVector>(std::move(res));
+        return Result<ByteVector>::make_ok<ByteVector>(std::move(res));
     }
 }

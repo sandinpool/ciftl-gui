@@ -52,18 +52,18 @@ namespace ciftl
 
     public:
         //刷新缓冲区内容
-        Result<size_t> flush() override
+        Result<void> flush() override
         {
             if (this->m_current_index != this->m_max_buffer_size && this->m_is_flush_init)
             {
-                return make_error<size_t>(StreamGeneratorErrorCode::FAILED_WHEN_FLUSHING_BUFFER, "刷新缓冲区时失败");
+                return Result<void>::make_err(StreamGeneratorErrorCode::FAILED_WHEN_FLUSHING_BUFFER, "刷新缓冲区时失败");
             }
             this->m_current_index = 0;
             auto temp_buffer = ByteVector(this->m_max_buffer_size);
             // 执行加密，这里是对m_plaintext_buffer进行加密，并将结果拷贝到temp_buffer中
             m_botan_chacha20->encipher(temp_buffer);
             memcpy(this->m_current_buffer.get(), temp_buffer.data(), this->m_max_buffer_size);
-            return make_ok<size_t>(this->m_max_buffer_size);
+            return Result<void>::make_ok(this->m_max_buffer_size);
         }
     private:
         std::unique_ptr<Botan::StreamCipher> m_botan_chacha20;
