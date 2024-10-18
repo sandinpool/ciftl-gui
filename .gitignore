@@ -33,3 +33,6 @@ Testing
 /env
 /cmake-build-qt-gui-debug
 /cmake-build-qt-gui-release
+/deps
+/cmake-build-qt-release-msvc
+/cmake-build-qt-debug-msvc

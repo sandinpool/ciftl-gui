@@ -2,42 +2,20 @@
 	"version" : 2,
 	"configurePresets" : [
 		{
-			"name" : "debug",
-			"binaryDir" : "${sourceDir}/cmake-build-debug",
+			"name" : "qt-debug-msvc",
+			"binaryDir" : "${sourceDir}/cmake-build-qt-debug-msvc",
 			"generator": "Visual Studio 17 2022",
 			"cacheVariables" : {
 				"CMAKE_TOOLCHAIN_FILE" : "${sourceDir}/env/vcpkg/scripts/buildsystems/vcpkg.cmake",
-				"COMPILE_CIFTL_GUI" : "OFF",
 				"CMAKE_BUILD_TYPE" : "Debug"
 			}
 		},
 		{
-			"name" : "release",
-			"binaryDir" : "${sourceDir}/cmake-build-release",
+			"name" : "qt-release-msvc",
+			"binaryDir" : "${sourceDir}/cmake-build-qt-release-msvc",
 			"generator": "Visual Studio 17 2022",
 			"cacheVariables" : {
 				"CMAKE_TOOLCHAIN_FILE" : "${sourceDir}/env/vcpkg/scripts/buildsystems/vcpkg.cmake",
-				"COMPILE_CIFTL_GUI" : "OFF",
-				"CMAKE_BUILD_TYPE" : "Release"
-			}
-		},
-		{
-			"name" : "qt-gui-debug",
-			"binaryDir" : "${sourceDir}/cmake-build-qt-gui-debug",
-			"generator": "Visual Studio 17 2022",
-			"cacheVariables" : {
-				"CMAKE_TOOLCHAIN_FILE" : "${sourceDir}/env/vcpkg/scripts/buildsystems/vcpkg.cmake",
-				"COMPILE_CIFTL_GUI" : "ON",
-				"CMAKE_BUILD_TYPE" : "Debug"
-			}
-		},
-		{
-			"name" : "qt-gui-release",
-			"binaryDir" : "${sourceDir}/cmake-build-qt-gui-release",
-			"generator": "Visual Studio 17 2022",
-			"cacheVariables" : {
-				"CMAKE_TOOLCHAIN_FILE" : "${sourceDir}/env/vcpkg/scripts/buildsystems/vcpkg.cmake",
-				"COMPILE_CIFTL_GUI" : "ON",
 				"CMAKE_BUILD_TYPE" : "Release"
 			}
 		}

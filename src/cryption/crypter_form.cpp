@@ -6,7 +6,7 @@
 
 #include <fmt/core.h>
 
-#include <ciftl_core/crypter/crypter.h>
+#include <ciftl/crypter/crypter.h>
 
 #include "mainwindow.h"
 #include "cryption/crypter_form.h"

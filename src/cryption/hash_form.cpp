@@ -7,8 +7,8 @@
 #include <QFileDialog>
 #include <QClipboard>
 
-#include <ciftl_core/hash/hash.h>
-#include <ciftl_core/etc/etc.h>
+#include <ciftl/hash/hash.h>
+#include <ciftl/etc/etc.h>
 
 #include "cryption/hash_form.h"
 #include "ui_hash_form.h"

@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QAbstractTableModel>
 
-#include <ciftl_core/crypter/crypter.h>
+#include <ciftl/crypter/crypter.h>
 
 #include "etc/line_importer.h"
 #include "etc/type.h"

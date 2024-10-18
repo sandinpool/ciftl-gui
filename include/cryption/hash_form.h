@@ -7,8 +7,8 @@
 #include <QDragEnterEvent>
 #include <QPlainTextEdit>
 
-#include <ciftl_core/hash/hash.h>
-#include <ciftl_core/etc/etc.h>
+#include <ciftl/hash/hash.h>
+#include <ciftl/etc/etc.h>
 
 namespace Ui
 {
