@@ -16,6 +16,15 @@ namespace Ui
     class CrypterForm;
 }
 
+enum class CipherAlgorithm
+{
+    ChaCha20,
+    AES128OFB,
+    AES192OFB,
+    AES256OFB,
+    SM4OFB,
+};
+
 class LineImorter;
 
 class CrypterTableDataModel : public QAbstractTableModel
@@ -165,8 +174,8 @@ private:
     LineImporter *m_line_importer;
 
 public:
-    const static std::vector<std::pair<std::string, ciftl::CipherAlgorithm>> __supported_cipher_algorithm__;
-    const static std::unordered_map<std::string, ciftl::CipherAlgorithm> __str_to_cipher_algorithm__;
+    const static std::vector<std::pair<std::string, CipherAlgorithm>> __supported_cipher_algorithm__;
+    const static std::unordered_map<std::string, CipherAlgorithm> __str_to_cipher_algorithm__;
 
 };
 

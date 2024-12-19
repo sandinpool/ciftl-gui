@@ -9,21 +9,22 @@
 #include <ciftl/crypter/crypter.h>
 
 #include "mainwindow.h"
+
 #include "cryption/crypter_form.h"
 #include "etc/line_importer.h"
+
 #include "ui_crypter_form.h"
 
 using namespace ciftl;
 
-const std::vector<std::pair<std::string, ciftl::CipherAlgorithm>> CrypterForm::__supported_cipher_algorithm__= {
-    {"ChaCha20-Standard", ciftl::CipherAlgorithm::ChaCha20Standard},
-    {"ChaCha20-OpenSSL", ciftl::CipherAlgorithm::ChaCha20},
-    {"AES-OpenSSL-128位", ciftl::CipherAlgorithm::AES128},
-    {"AES-OpenSSL-192位", ciftl::CipherAlgorithm::AES192},
-    {"AES-OpenSSL-256位", ciftl::CipherAlgorithm::AES256},
-    {"SM4-OpenSSL", ciftl::CipherAlgorithm::SM4}
+const std::vector<std::pair<std::string, CipherAlgorithm>> CrypterForm::__supported_cipher_algorithm__= {
+    {"ChaCha20", CipherAlgorithm::ChaCha20},
+    {"AES-128位-OFB", CipherAlgorithm::AES128OFB},
+    {"AES-192位-OFB", CipherAlgorithm::AES192OFB},
+    {"AES-256位-OFB", CipherAlgorithm::AES256OFB},
+    {"SM4-OFB", CipherAlgorithm::SM4OFB}
 };
-const std::unordered_map<std::string, ciftl::CipherAlgorithm> CrypterForm::__str_to_cipher_algorithm__(__supported_cipher_algorithm__.begin(), __supported_cipher_algorithm__.end());
+const std::unordered_map<std::string, CipherAlgorithm> CrypterForm::__str_to_cipher_algorithm__(__supported_cipher_algorithm__.begin(), __supported_cipher_algorithm__.end());
 
 
 CrypterForm::CrypterForm(QWidget *parent) : QWidget(parent),
@@ -154,7 +155,7 @@ void CrypterForm::copy_result()
     clipboard->setText(res.c_str());
 }
 
-inline std::shared_ptr<StringCrypterInterface> string_crypter_selection(const std::string &algo_name)
+inline std::shared_ptr<IStringCrypter> string_crypter_selection(const std::string &algo_name)
 {
     auto iter = CrypterForm::__str_to_cipher_algorithm__.find(algo_name);
     if (iter == CrypterForm::__str_to_cipher_algorithm__.end())
@@ -163,18 +164,16 @@ inline std::shared_ptr<StringCrypterInterface> string_crypter_selection(const st
     }
     switch (iter->second)
     {
-    case CipherAlgorithm::ChaCha20Standard:
-        return std::make_shared<ChaCha20StdStringCrypter>();
     case CipherAlgorithm::ChaCha20:
-        return std::make_shared<ChaCha20OpenSSLStringCrypter>();
-    case CipherAlgorithm::AES128:
-        return std::make_shared<AES128OpenSSLStringCrypter>();
-    case CipherAlgorithm::AES192:
-        return std::make_shared<AES192OpenSSLStringCrypter>();
-    case CipherAlgorithm::AES256:
-        return std::make_shared<AES256OpenSSLStringCrypter>();
-    case CipherAlgorithm::SM4:
-        return std::make_shared<SM4OpenSSLStringCrypter>();
+        return std::make_shared<StringCrypter<ChaCha20CipherAlgorithm>>();
+    case CipherAlgorithm::AES128OFB:
+        return std::make_shared<StringCrypter<AES128OFBCipherAlgorithm>>();
+    case CipherAlgorithm::AES192OFB:
+        return std::make_shared<StringCrypter<AES192OFBCipherAlgorithm>>();
+    case CipherAlgorithm::AES256OFB:
+        return std::make_shared<StringCrypter<AES256OFBCipherAlgorithm>>();
+    case CipherAlgorithm::SM4OFB:
+        return std::make_shared<StringCrypter<SM4OFBCipherAlgorithm>>();
     default:
         return nullptr;
     }
@@ -198,7 +197,7 @@ void CrypterForm::encrypt()
         QMessageBox::critical(this, "错误", "待加密内容不能为空");
         return;
     }
-    std::shared_ptr<StringCrypterInterface> string_crypter = string_crypter_selection(ui->comboBoxCipherType->currentText().toStdString());
+    std::shared_ptr<IStringCrypter> string_crypter = string_crypter_selection(ui->comboBoxCipherType->currentText().toStdString());
     for (auto &item : *res_data->get_raw_data())
     {
         std::string plain_text = item.src_text;
@@ -237,7 +236,7 @@ void CrypterForm::decrypt()
         QMessageBox::critical(this, "错误", "待解密内容不能为空");
         return;
     }
-    std::shared_ptr<StringCrypterInterface> string_crypter = string_crypter_selection(ui->comboBoxCipherType->currentText().toStdString());
+    std::shared_ptr<IStringCrypter> string_crypter = string_crypter_selection(ui->comboBoxCipherType->currentText().toStdString());
     for (auto &item : *res_data->get_raw_data())
     {
         std::string cipher_text = item.src_text;

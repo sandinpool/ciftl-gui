@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(ciftl-gui VERSION 1.0.0.2 LANGUAGES CXX)
+project(ciftl-gui VERSION 1.0.0.3 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -25,6 +25,8 @@ endif()
 # 根据构建类型设置编译器选项
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Build type: Debug")
+    set(LIBRARY_OUTPUT_PATH "${LIBRARY_OUTPUT_PATH}/Debug")
+    set(EXECUTABLE_OUTPUT_PATH "${EXECUTABLE_OUTPUT_PATH}/Debug")
     if(MSVC)
         # Visual Studio 编译器的 Debug 选项
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Od /Zi /D_DEBUG")
@@ -34,6 +36,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     endif()
 else()
     message(STATUS "Build type: Release")
+    set(LIBRARY_OUTPUT_PATH "${LIBRARY_OUTPUT_PATH}/Release")
+    set(EXECUTABLE_OUTPUT_PATH "${EXECUTABLE_OUTPUT_PATH}/Release")
     if(MSVC)
         # Visual Studio 编译器的 Release 选项
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2 /Oi /Gy /DNDEBUG")
@@ -106,14 +110,9 @@ set(PROJECT_SOURCES
 )
 
 include_directories(${CIFTL_GUI_INCLUDE_PATH})
-include_directories(deps/ciftl-cpp/include)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
-find_package(OpenSSL REQUIRED)
-find_package(fmt REQUIRED)
-
-add_subdirectory(deps/ciftl-cpp)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
@@ -144,10 +143,12 @@ else()
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
+find_package(fmt CONFIG REQUIRED)
+find_package(OpenSSL REQUIRED)
+find_package(Ciftl CONFIG REQUIRED)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-    OpenSSL::SSL OpenSSL::Crypto
-    fmt::fmt
-    ciftl)
+    fmt::fmt OpenSSL::SSL OpenSSL::Crypto Ciftl::ciftl)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

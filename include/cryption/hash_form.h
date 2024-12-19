@@ -24,7 +24,7 @@ public:
     ~HashForm();
 
 private:
-    std::vector<std::pair<std::string, std::shared_ptr<ciftl::Hasher>>> generate_hasher_vec();
+    std::vector<std::pair<std::string, std::shared_ptr<ciftl::IHasher>>> generate_hasher_vec();
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override

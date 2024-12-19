@@ -33,9 +33,9 @@ HashForm::~HashForm()
     delete ui;
 }
 
-std::vector<std::pair<std::string, std::shared_ptr<ciftl::Hasher>>> HashForm::generate_hasher_vec()
+std::vector<std::pair<std::string, std::shared_ptr<ciftl::IHasher>>> HashForm::generate_hasher_vec()
 {
-    std::vector<std::pair<std::string, std::shared_ptr<ciftl::Hasher>>> hasher_vec;
+    std::vector<std::pair<std::string, std::shared_ptr<ciftl::IHasher>>> hasher_vec;
     if (ui->checkBoxMD5->isChecked())
     {
         hasher_vec.push_back({"MD5", std::make_shared<ciftl::MD5Hasher>()});

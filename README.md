@@ -1,18 +1,6 @@
 # README
 
-**ciftl**是一款密码学工具。
+**ciftl**是一个密码学工具箱，包括了"密码工具"、"哈希工具"等实用工具。 
 
-## 配置
-
-1. 启动bootstrap，配置vcpkg
-
-```
-python bootstrap.py
-```
-
-2. 调用CMake进行配置
-
-```
-cmake --preset=qt-gui-debug
-```
-
+- 密码工具：用于对字符串进行加密，目前支持ChaCha20，AES和SM4三种加密算法。
+- 哈希工具：用于对文件进行哈希计算，支持MD5, Sha1, Sha256, Sha512四种哈希算法。
